@@ -99,24 +99,24 @@ whch are configured through the setting ``FLEXY_INDEXERS``::
 
 This warrants a bit of explanation:
 
- * Every key is the dictionary is a model identifier
-   (``<app_label>.<model_name>``)
- * The value can be either a mapping or a string
- * If it is a mapping, it must contain three keys:
-   ``index``, whose value is the index where this model is stored;
-   ``type``, which is the document type that it has
-   (see mappings above,
-   the document type is the keys under the ``mappings`` key of the index);
-   and ``data`` which is a dictionary
-   where for every field in the index we have the corresponding field
-   on the model (one-to-one)
- * If it is a string, it must be the dotted name of a function that,
-   if invoked with the ``instance`` (i.e. model to be indexed)
-   as a single argument,
-   returns a dictionary with the same keys as before
-   (``index``, ``type``, ``data``)
-   but where data has the actual values to index
-   (not string containing attribute names)
+* Every key is the dictionary is a model identifier
+  (``<app_label>.<model_name>``)
+* The value can be either a mapping or a string
+* If it is a mapping, it must contain three keys:
+  ``index``, whose value is the index where this model is stored;
+  ``type``, which is the document type that it has
+  (see mappings above,
+  the document type is the keys under the ``mappings`` key of the index);
+  and ``data`` which is a dictionary
+  where for every field in the index we have the corresponding field
+  on the model (one-to-one)
+* If it is a string, it must be the dotted name of a function that,
+  if invoked with the ``instance`` (i.e. model to be indexed)
+  as a single argument,
+  returns a dictionary with the same keys as before
+  (``index``, ``type``, ``data``)
+  but where data has the actual values to index
+  (not string containing attribute names)
 
 It is recommended to use the second form of indexer (function)
 for everything but the most trivial needs.
@@ -162,7 +162,7 @@ so it is better if you use it on small data sets (< 200).
 Commands
 --------
 
-``django-flexy`` comes with two useful management commands::
+``django-flexy`` comes with two useful management commands:
 
 ``sync_elastic``
     Creates the indexes and updates them if their settings have changed.

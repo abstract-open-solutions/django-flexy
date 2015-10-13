@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from . import connections
+
 
 class FlexyConfig(AppConfig):
 
@@ -7,5 +9,5 @@ class FlexyConfig(AppConfig):
     verbose_name = "Flexy (Elasticsearch integration)"
 
     def ready(self):
-        # Configure and hook up elastic stuff
-        pass
+        # Configure connections
+        connections.configure()

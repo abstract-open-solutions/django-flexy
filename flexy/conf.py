@@ -11,23 +11,10 @@ class FlexyAppConf(AppConf):
     }
 
     INDEXES = {
-        'main': {
-            'connection': 'default',
-            'settings': {},
-            'mappings': {}
-        }
+        'main': {}
     }
 
-    MODELS = {}
-    # MODELS = {
-    #     'appname.foo': {
-    #         '_index': 'main',
-    #         '_type': 'foo',
-    #         '_id': 'fieldname',
-    #         'field': 'fieldname'
-    #     },
-    #     'appname.bar': 'appname.indexers.bar'
-    # }
+    INDEXERS = {}
 
     class Meta:
         prefix = 'flexy'

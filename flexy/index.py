@@ -1,5 +1,4 @@
 from django.conf import settings
-from elasticsearch_dsl import connections
 from elasticsearch_dsl import index
 
 
@@ -25,27 +24,43 @@ class Index(object):
             self.wrapped.delete()
 
     def update(self):
-        self.wrapped.connection.indices.put_settings(
-            index=self.wrapped._name,
-            body=self.kwargs['settings']
-        )
-        for mapping_name, mapping_data in self.kwargs['mappings'].iteritems():
-            self.wrapped.connection.indices.put_mapping(
+        if self.exists:
+            self.connection.indices.put_settings(
                 index=self.wrapped._name,
-                doc_type=mapping_name,
-                body=mapping_data
+                body=self.kwargs['settings']
             )
+            for mapping_name, mapping_data in \
+                    self.kwargs['mappings'].iteritems():
+                self.connection.indices.put_mapping(
+                    index=self.wrapped._name,
+                    doc_type=mapping_name,
+                    body=mapping_data
+                )
+
+    @property
+    def connection(self):
+        return self.wrapped.connection
 
     @property
     def exists(self):
-        return self.wrapped.connection.indices.exists(
-            self.wrapped._name
+        return self.connection.indices.exists(self.wrapped._name)
+
+    def index(self, doc_type, id, data, refresh=True):
+        self.connection.index(
+            index=self.wrapped._name,
+            doc_type=doc_type,
+            id=id,
+            data=data,
+            refresh=refresh
         )
 
-
-def configure():
-    connections_definitions = getattr(settings, 'FLEXY_CONNECTIONS', {})
-    connections.configure(**connections_definitions)
+    def unindex(self, doc_type, id, refresh=True):
+        self.connection.delete(
+            index=self.wrapped._name,
+            doc_type=doc_type,
+            id=id,
+            refresh=refresh
+        )
 
 
 def get_indexes():

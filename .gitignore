@@ -1,0 +1,13 @@
+*.py[co]
+*.egg-info
+*~
+*.swp
+*.swo
+.#*
+
+**/bower_modules/
+**/node_modules/
+**/temp/
+**/dist/
+
+dist

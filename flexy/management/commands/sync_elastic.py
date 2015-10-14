@@ -25,7 +25,7 @@ class Command(BaseCommand):
             'updated': [],
             'created': []
         }
-        for index_name, index_object in indexes.itervalues():
+        for index_name, index_object in indexes.iteritems():
             if index_object.exists:
                 index_object.update()
                 status['updated'].append(index_name)

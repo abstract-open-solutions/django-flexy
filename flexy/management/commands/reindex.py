@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.apps import apps
 from ... import index
 from ...handlers import get_index_data

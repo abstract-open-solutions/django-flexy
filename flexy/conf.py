@@ -10,9 +10,7 @@ class FlexyAppConf(AppConf):
         }
     }
 
-    INDEXES = {
-        'main': {}
-    }
+    INDEXES = {}
 
     INDEXERS = {}
 

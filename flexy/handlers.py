@@ -14,13 +14,19 @@ def model_identifier(Klass):
     )
 
 
+def _coalesce(value_or_callable):
+    if callable(value_or_callable):
+        return value_or_callable()
+    return value_or_callable
+
+
 def get_index_data(identifier, instance, indexes, indexer_definitions):
     index_definition = indexer_definitions[identifier]
     if isinstance(index_definition, Mapping):
         index_name = index_definition['index']
         doc_type = index_definition['type']
         data = {
-            k: getattr(instance, v) for k, v in
+            k: _coalesce(getattr(instance, v)) for k, v in
             index_definition['data'].iteritems()
         }
     else:

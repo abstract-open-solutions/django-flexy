@@ -59,7 +59,7 @@ def index_object(identifier, instance, indexes, indexer_definitions):
 def index_content(sender, **kwargs):
     indexer_definitions = getattr(settings, 'FLEXY_INDEXERS')
     identifier = model_identifier(sender)
-    if identifier in indexer_definitions:
+    if not kwargs.get('raw', False) and identifier in indexer_definitions:
         indexes = index.get_indexes()
         instance = kwargs['instance']
         index_object(identifier, instance, indexes, indexer_definitions)

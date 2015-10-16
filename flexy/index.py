@@ -50,7 +50,7 @@ class Index(object):
             index=self.wrapped._name,
             doc_type=doc_type,
             id=id,
-            data=data,
+            body=data,
             refresh=refresh
         )
 

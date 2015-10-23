@@ -9,15 +9,25 @@ class Index(object):
             slug,
             using=connection
         )
-        self.kwargs = {}
         if settings:
-            self.kwargs['settings'] = settings
+            self.wrapped.settings(**settings)
+        self.mappings = None
         if mappings:
-            self.kwargs['mappings'] = mappings
+            self.mappings = mappings
+
+    def put_mappings(self):
+        if self.mappings is not None:
+            for mapping_name, mapping_data in self.mappings.iteritems():
+                self.connection.indices.put_mapping(
+                    index=self.wrapped._name,
+                    doc_type=mapping_name,
+                    body=mapping_data
+                )
 
     def create(self):
         if not self.exists:
-            self.wrapped.create(**self.kwargs)
+            self.wrapped.create()
+            self.put_mappings()
 
     def delete(self):
         if self.exists:
@@ -25,18 +35,13 @@ class Index(object):
 
     def update(self):
         if self.exists:
-            if 'settings' in self.kwargs:
+            kwargs = self.wrapped.to_dict()
+            if kwargs.get('settings'):
                 self.connection.indices.put_settings(
                     index=self.wrapped._name,
-                    body=self.kwargs['settings']
+                    body=kwargs['settings']
                 )
-            for mapping_name, mapping_data in \
-                    self.kwargs.get('mappings', {}).iteritems():
-                self.connection.indices.put_mapping(
-                    index=self.wrapped._name,
-                    doc_type=mapping_name,
-                    body=mapping_data
-                )
+            self.put_mappings()
 
     @property
     def connection(self):

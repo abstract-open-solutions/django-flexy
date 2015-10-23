@@ -25,12 +25,13 @@ class Index(object):
 
     def update(self):
         if self.exists:
-            self.connection.indices.put_settings(
-                index=self.wrapped._name,
-                body=self.kwargs['settings']
-            )
+            if 'settings' in self.kwargs:
+                self.connection.indices.put_settings(
+                    index=self.wrapped._name,
+                    body=self.kwargs['settings']
+                )
             for mapping_name, mapping_data in \
-                    self.kwargs['mappings'].iteritems():
+                    self.kwargs.get('mappings', {}).iteritems():
                 self.connection.indices.put_mapping(
                     index=self.wrapped._name,
                     doc_type=mapping_name,

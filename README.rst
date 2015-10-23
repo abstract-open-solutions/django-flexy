@@ -168,6 +168,12 @@ Commands
     Creates the indexes and updates them if their settings have changed.
     It's a bit like ``syncdb``, but for elastic.
 
+``flush_elastic``
+    Deletes the indexes.
+    You can also pass a list of optional indexes to just delete those.
+    If you pass ``--recreate`` it will re-create them,
+    but not reindex content (see ``reindex`` for that).
+
 ``reindex``
     Reindexes content. Useful after imports and the like.
 

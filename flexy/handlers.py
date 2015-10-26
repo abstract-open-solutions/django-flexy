@@ -22,6 +22,7 @@ def _coalesce(value_or_callable):
 
 def get_index_data(identifier, instance, indexes, indexer_definitions):
     index_definition = indexer_definitions[identifier]
+    results = []
     if isinstance(index_definition, Mapping):
         index_name = index_definition['index']
         doc_type = index_definition['type']
@@ -29,30 +30,39 @@ def get_index_data(identifier, instance, indexes, indexer_definitions):
             k: _coalesce(getattr(instance, v)) for k, v in
             index_definition['data'].iteritems()
         }
+        id = '{}:{}'.format(identifier, instance.pk)
+        results.append(
+            (index_name, doc_type, id, data)
+        )
     else:
         index_definition_generator = module_loading.import_string(
             index_definition
         )
-        index_definition = index_definition_generator(instance)
-        index_name = index_definition['index']
-        doc_type = index_definition['type']
-        data = index_definition['data']
-    id = '{}:{}'.format(identifier, instance.pk)
-    return (index_name, doc_type, id, data)
+        for index_definition in index_definition_generator(instance):
+            index_name = index_definition['index']
+            doc_type = index_definition['type']
+            data = index_definition['data']
+            id = index_definition.get('id')
+            if id is None:
+                id = '{}:{}'.format(identifier, instance.pk)
+            results.append(
+                (index_name, doc_type, id, data)
+            )
+    return results
 
 
 def index_object(identifier, instance, indexes, indexer_definitions):
-    index_name, doc_type, id, data = get_index_data(
+    for (index_name, doc_type, id, data) in get_index_data(
         identifier,
         instance,
         indexes,
         indexer_definitions
-    )
-    indexes[index_name].index(
-        doc_type,
-        id,
-        data
-    )
+    ):
+        indexes[index_name].index(
+            doc_type,
+            id,
+            data
+        )
 
 
 @receiver(signals.post_save)
@@ -72,13 +82,13 @@ def remove_content(sender, **kwargs):
     if identifier in indexer_definitions:
         indexes = index.get_indexes()
         instance = kwargs['instance']
-        index_name, doc_type, id, __ = get_index_data(
+        for (index_name, doc_type, id, __) in get_index_data(
             identifier,
             instance,
             indexes,
             indexer_definitions
-        )
-        indexes[index_name].unindex(
-            doc_type,
-            id
-        )
+        ):
+            indexes[index_name].unindex(
+                doc_type,
+                id
+            )

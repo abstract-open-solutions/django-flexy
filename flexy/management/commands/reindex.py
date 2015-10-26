@@ -32,23 +32,26 @@ class Command(BaseCommand):
             else:
                 objects = objects[options['start']:]
             for instance in objects:
-                index_name, doc_type, id, data = get_index_data(
+                for (index_name, doc_type, id, data) in get_index_data(
                     identifier,
                     instance,
                     indexes,
                     indexer_definitions
-                )
-                index_bulk_actions = bulk_actions.setdefault(index_name, [])
-                index_bulk_actions.append(
-                    {
-                        'index': {
-                            '_index': index_name,
-                            '_type': doc_type,
-                            '_id': id
+                ):
+                    index_bulk_actions = bulk_actions.setdefault(
+                        index_name,
+                        []
+                    )
+                    index_bulk_actions.append(
+                        {
+                            'index': {
+                                '_index': index_name,
+                                '_type': doc_type,
+                                '_id': id
+                            }
                         }
-                    }
-                )
-                index_bulk_actions.append(data)
+                    )
+                    index_bulk_actions.append(data)
         for index_name, index_bulk_actions in bulk_actions.iteritems():
             index_object = indexes[index_name]
             if options['clean']:

@@ -61,7 +61,11 @@ class Command(BaseCommand):
             if not index_object.exists:
                 index_object.create()
                 self.stdout.write('Created index {}'.format(index_name))
-            index_object.connection.bulk(index_bulk_actions, refresh=True, timeout=30)
+            index_object.connection.bulk(
+                index_bulk_actions,
+                refresh=True,
+                timeout=120
+            )
             self.stdout.write('Indexed {} items in index {}'.format(
                 len(index_bulk_actions) / 2,
                 index_name

@@ -35,7 +35,7 @@ setup(
         'pytz',
         'mock',
         'Django',
-        'elasticsearch-dsl',
+        'elasticsearch-dsl<2.0.0',
         'django-appconf'
     ]
 )
